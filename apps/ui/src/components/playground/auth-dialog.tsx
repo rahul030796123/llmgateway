@@ -201,7 +201,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 				</DialogHeader>
 
 				{mode === "login" ? (
-					<Form {...loginForm}>
+					<Form {...loginForm} key="login-form">
 						<form
 							onSubmit={loginForm.handleSubmit(handleLogin)}
 							className="space-y-4"
@@ -214,6 +214,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 										<FormLabel>Email</FormLabel>
 										<FormControl>
 											<Input
+												key="login-email"
 												placeholder="name@example.com"
 												type="email"
 												autoComplete="username webauthn"
@@ -232,6 +233,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 										<FormLabel>Password</FormLabel>
 										<FormControl>
 											<Input
+												key="login-password"
 												placeholder="••••••••"
 												type="password"
 												autoComplete="current-password webauthn"
@@ -255,7 +257,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 						</form>
 					</Form>
 				) : (
-					<Form {...signupForm}>
+					<Form {...signupForm} key="signup-form">
 						<form
 							onSubmit={signupForm.handleSubmit(handleSignup)}
 							className="space-y-4"
@@ -267,7 +269,11 @@ export function AuthDialog({ open }: AuthDialogProps) {
 									<FormItem>
 										<FormLabel>Name</FormLabel>
 										<FormControl>
-											<Input placeholder="John Doe" {...field} />
+											<Input
+												key="signup-name"
+												placeholder="John Doe"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -281,6 +287,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 										<FormLabel>Email</FormLabel>
 										<FormControl>
 											<Input
+												key="signup-email"
 												placeholder="name@example.com"
 												type="email"
 												{...field}
@@ -298,6 +305,7 @@ export function AuthDialog({ open }: AuthDialogProps) {
 										<FormLabel>Password</FormLabel>
 										<FormControl>
 											<Input
+												key="signup-password"
 												placeholder="••••••••"
 												type="password"
 												{...field}
