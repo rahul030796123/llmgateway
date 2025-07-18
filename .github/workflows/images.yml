@@ -17,13 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.set-tag.outputs.IMAGE_TAG }}
+      repo_name: ${{ steps.set-tag.outputs.REPO_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set image tag
+      - name: Set image tag and repo name
         id: set-tag
         run: |
+          # Convert repository name to lowercase for Docker registry
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_OUTPUT
+
           if [[ "${{ github.event_name }}" == "push" ]]; then
             SHORT_SHA=$(git rev-parse --short HEAD)
             echo "IMAGE_TAG=v0.0.0-${SHORT_SHA}" >> $GITHUB_OUTPUT
@@ -67,8 +72,8 @@ jobs:
           file: infra/split.dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}-${{ matrix.app }}:${{ needs.setup.outputs.image_tag }}
-            ghcr.io/${{ github.repository }}-${{ matrix.app }}:latest
+            ghcr.io/${{ needs.setup.outputs.repo_name }}-${{ matrix.app }}:${{ needs.setup.outputs.image_tag }}
+            ghcr.io/${{ needs.setup.outputs.repo_name }}-${{ matrix.app }}:latest
           target: ${{ matrix.app }}
           cache-from: type=gha,scope=${{ matrix.app }}
           cache-to: type=gha,mode=max,scope=${{ matrix.app }}
@@ -104,8 +109,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}-unified:${{ needs.setup.outputs.image_tag }}
-            ghcr.io/${{ github.repository }}-unified:latest
+            ghcr.io/${{ needs.setup.outputs.repo_name }}-unified:${{ needs.setup.outputs.image_tag }}
+            ghcr.io/${{ needs.setup.outputs.repo_name }}-unified:latest
           cache-from: type=gha,scope=unified
           cache-to: type=gha,mode=max,scope=unified
           build-args: |
